@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import globalErrorHandler from "./controller/errorController.js";
+import { router as userRouter } from "./routes/users.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 app.use(morgan("dev"));
 
+app.use("/api/v1/users", userRouter);
 app.use(globalErrorHandler);
 
 export default app;
