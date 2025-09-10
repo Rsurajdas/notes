@@ -21,17 +21,16 @@ const userSchema = new Schema({
       "Password must contain at least 8 characters, including uppercase, lowercase, number, and symbol",
     ],
   },
-  // confirmPassword: {
-  //   type: String,
-  //   required: [true, "Please confirm your password"],
-  //   validate: {
-  //     validator: function (el) {
-  //       return el === this.password;
-  //     },
-  //     message: "Passwords do not match",
-  //   },
-  //   select: false,
-  // },
+  confirmPassword: {
+    type: String,
+    validate: {
+      validator: function (el) {
+        return el === this.password;
+      },
+      message: "Passwords do not match",
+    },
+    select: false,
+  },
   fontTheme: {
     type: String,
     enum: ["sans-serif", "serif", "monospace"],
