@@ -1,4 +1,5 @@
 import compression from "compression";
+import cors from "cors";
 import express from "express";
 import morgan from "morgan";
 import path from "path";
@@ -17,7 +18,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 app.use(morgan("dev"));
+app.use(cors());
 
+// Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/notes", noteRouter);
 app.use(globalErrorHandler);
