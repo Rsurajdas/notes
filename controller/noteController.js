@@ -43,10 +43,14 @@ export const getAllNotes = catchAsync(async (req, res, next) => {
 });
 
 export const getNote = catchAsync(async (req, res, next) => {
-  const id = req.params.id;
+  const noteId = req.params.id;
   const userId = req.user.id;
 
-  const note = await Notes.findOne({ _id: id, user: userId, isTrashed: false });
+  const note = await Notes.findOne({
+    _id: noteId,
+    user: userId,
+    isTrashed: false,
+  });
 
   if (!note) {
     return next(new AppError("No note found with that ID", 404));
@@ -60,13 +64,41 @@ export const getNote = catchAsync(async (req, res, next) => {
   });
 });
 
+export const updateNote = catchAsync(async (req, res, next) => {
+  const noteId = req.params.id;
+  const userId = req.user.id;
+  const { title, description, tags } = req.body;
+
+  const updatedNote = await Notes.findByIdAndUpdate(
+    { _id: noteId, user: userId, isTrased: false },
+    {
+      title,
+      description,
+      tags,
+    },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedNote) {
+    return next(new AppError("No note found with that ID", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Note successfully updated",
+    data: {
+      note: updatedNote,
+    },
+  });
+});
+
 export const updateArchiveStatus = catchAsync(async (req, res, next) => {
-  const id = req.params.id;
+  const noteId = req.params.id;
   const userId = req.user.id;
   const { isArchived } = req.body;
   const note = await Notes.findByIdAndUpdate(
     {
-      _id: id,
+      _id: noteId,
       user: userId,
       isTrashed: false,
     },
@@ -80,6 +112,7 @@ export const updateArchiveStatus = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
+    message: `Note successfully ${isArchived ? "archived" : "unarchived"}`,
     data: {
       note,
     },

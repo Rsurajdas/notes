@@ -24,3 +24,7 @@ package-lock.json
 *.sln
 *.sw?
 .env
+
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md
