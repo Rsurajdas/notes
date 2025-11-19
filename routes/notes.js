@@ -6,7 +6,6 @@ import {
   deleteNote,
   getAllNotes,
   getNote,
-  updateArchiveStatus,
   updateNote,
 } from "../controller/noteController.js";
 const router = express.Router();
@@ -16,7 +15,6 @@ router
   .route("/:id")
   .get(protectRoute, getNote)
   .patch(protectRoute, updateNote)
-  .patch(protectRoute, updateArchiveStatus)
   .delete(protectRoute, deleteNote);
 
 export { router };

@@ -67,15 +67,21 @@ export const getNote = catchAsync(async (req, res, next) => {
 export const updateNote = catchAsync(async (req, res, next) => {
   const noteId = req.params.id;
   const userId = req.user.id;
-  const { title, description, tags } = req.body;
+  const { title, description, tags, isArchived } = req.body;
+
+  const updateFields = {};
+
+  if (isArchived !== undefined) {
+    updateFields.isArchived = isArchived;
+  } else {
+    updateFields.title = title;
+    updateFields.description = description;
+    updateFields.tags = tags;
+  }
 
   const updatedNote = await Notes.findByIdAndUpdate(
     { _id: noteId, user: userId, isTrased: false },
-    {
-      title,
-      description,
-      tags,
-    },
+    updateFields,
     { new: true, runValidators: true }
   );
 
@@ -85,36 +91,15 @@ export const updateNote = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    message: "Note successfully updated",
+    message: `${
+      isArchived !== undefined
+        ? isArchived
+          ? "Note archived succesfully"
+          : "Note unarchived succesfully"
+        : "Note updated successfully"
+    }`,
     data: {
       note: updatedNote,
-    },
-  });
-});
-
-export const updateArchiveStatus = catchAsync(async (req, res, next) => {
-  const noteId = req.params.id;
-  const userId = req.user.id;
-  const { isArchived } = req.body;
-  const note = await Notes.findByIdAndUpdate(
-    {
-      _id: noteId,
-      user: userId,
-      isTrashed: false,
-    },
-    { isArchived },
-    { new: true, runValidators: true }
-  );
-
-  if (!note) {
-    return next(new AppError("No note found with that ID", 404));
-  }
-
-  res.status(200).json({
-    status: "success",
-    message: `Note successfully ${isArchived ? "archived" : "unarchived"}`,
-    data: {
-      note,
     },
   });
 });
