@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 
 import globalErrorHandler from "./controller/errorController.js";
 import { router as noteRouter } from "./routes/notes.js";
+import { router as tagRouter } from "./routes/tags.js";
 import { router as userRouter } from "./routes/users.js";
 
 const app = express();
@@ -23,6 +24,7 @@ app.use(cors());
 // Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/notes", noteRouter);
+app.use("/api/v1/tags", tagRouter);
 app.use(globalErrorHandler);
 
 export default app;
